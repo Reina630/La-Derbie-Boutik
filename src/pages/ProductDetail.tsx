@@ -1,0 +1,383 @@
+import { useParams, Link } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { MessageCircle, Share2, Check, Package, Truck, Shield, ShoppingCart } from 'lucide-react';
+import ProductCard from '@/components/ProductCard';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+
+const ProductDetail = () => {
+  const { id } = useParams();
+  const { addToCart } = useCart();
+  const [product, setProduct] = useState<any>(null);
+  const [relatedProducts, setRelatedProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [copied, setCopied] = useState(false);
+  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
+  const [orderForm, setOrderForm] = useState({
+    name: '',
+    phone: '',
+    address: ''
+  });
+
+  useEffect(() => {
+    loadProduct();
+  }, [id]);
+
+  const loadProduct = async () => {
+    setLoading(true);
+    try {
+      // Charger le produit
+      const { data: productData, error: productError } = await (supabase as any)
+        .from('products')
+        .select('*, categories(name)')
+        .eq('id', id)
+        .single();
+
+      if (productError) throw productError;
+      setProduct(productData);
+
+      // Charger les produits similaires
+      if (productData) {
+        const { data: relatedData } = await (supabase as any)
+          .from('products')
+          .select('*')
+          .eq('category_id', productData.category_id)
+          .neq('id', id)
+          .limit(4);
+        setRelatedProducts(relatedData || []);
+      }
+    } catch (error) {
+      console.error('Erreur chargement produit:', error);
+      toast.error('Erreur lors du chargement du produit');
+    }
+    setLoading(false);
+  };
+
+  const handleCopyLink = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    toast.success('Lien copié !');
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      // Enregistrer la commande dans Supabase
+      const { data, error } = await (supabase as any)
+        .from('orders')
+        .insert([{
+          customer_name: orderForm.name,
+          customer_phone: orderForm.phone,
+          customer_address: orderForm.address,
+          product_name: product.name,
+          quantity: quantity,
+          total_price: product.price * quantity,
+          status: 'pending'
+        }])
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Erreur Supabase complète:', JSON.stringify(error, null, 2));
+        console.error('Erreur message:', error.message);
+        console.error('Erreur details:', error.details);
+        console.error('Erreur hint:', error.hint);
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error('Aucune donnée retournée');
+      }
+
+      setOrderDialogOpen(false);
+        setOrderForm({ name: '', phone: '', address: '' });
+      setQuantity(1);
+      
+      // Toast de confirmation au centre
+      toast.success('Commande enregistrée avec succès ! Un de nos commerciaux vous contactera très prochainement pour confirmer votre commande.', {
+        duration: 5000,
+        position: 'top-center',
+        style: {
+          background: '#10b981',
+          color: '#fff',
+          fontSize: '16px',
+          padding: '20px',
+          textAlign: 'center',
+          maxWidth: '500px',
+        },
+      });
+    } catch (error: any) {
+      console.error('Erreur lors de la commande:', error);
+      toast.error(error?.message || 'Erreur lors de l\'enregistrement de la commande');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto mb-4"></div>
+          <p>Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-4">Produit non trouvé</h1>
+          <Link to="/boutique">
+            <Button className="bg-accent hover:bg-accent/90 text-accent-foreground">
+              Retour à la boutique
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const images = [product.image_url];
+  const categoryName = product.categories?.name || 'Produit';
+
+  return (
+    <div className="min-h-screen py-8 mb-16 md:mb-0">
+      <div className="container mx-auto px-4 max-w-6xl">
+        {/* Breadcrumb */}
+        <div className="mb-6 text-sm text-muted-foreground">
+          <Link to="/boutique" className="hover:text-accent">Boutique</Link>
+          {' > '}
+          <span>{categoryName}</span>
+          {' > '}
+          <span className="text-foreground">{product.name}</span>
+        </div>
+
+        {/* Product Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          {/* Image */}
+          <div className="aspect-square rounded-lg overflow-hidden bg-secondary/20">
+            <img
+              src={images[selectedImage]}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Product Info */}
+          <div className="space-y-6">
+            <div>
+              <span className="inline-block px-3 py-1 bg-accent/10 text-accent text-sm font-medium rounded-full mb-3">
+                {categoryName}
+              </span>
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">
+                {product.name}
+              </h1>
+              <p className="text-3xl font-bold text-accent mb-4">
+                {product.price.toLocaleString()} FCFA
+              </p>
+            </div>
+
+            {/* Description */}
+            <div className="prose prose-sm max-w-none">
+              <h3 className="text-lg font-semibold mb-2">Description du produit</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {product.description}
+              </p>
+            </div>
+
+            {/* Details */}
+            <div className="space-y-3 border-t pt-4">
+              <h3 className="text-lg font-semibold mb-3">Détails</h3>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                
+                  <span>Emballage soigné</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="h-4 w-4 text-accent" />
+                  <span>Support 7j/7</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quantity Selector */}
+            <div className="space-y-2 border-t pt-4">
+              <Label htmlFor="quantity" className="text-base font-semibold">Quantité</Label>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="h-12 w-12 text-xl font-bold border-2"
+                >
+                  −
+                </Button>
+                <Input
+                  id="quantity"
+                  type="number"
+                  min="1"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                  className="text-center text-xl font-bold h-12 w-24 border-2"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="h-12 w-12 text-xl font-bold border-2"
+                >
+                  +
+                </Button>
+                <div className="ml-auto text-right">
+                  <div className="text-xs text-muted-foreground">Total</div>
+                  <div className="text-xl font-bold text-accent">
+                    {(product.price * quantity).toLocaleString()} FCFA
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-3 pt-2">
+              <Dialog open={orderDialogOpen} onOpenChange={setOrderDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    className="w-full bg-accent hover:bg-accent/90 text-accent-foreground text-lg py-6 rounded-lg animate-pulse hover:animate-none shadow-lg shadow-accent/50"
+                  >
+                    <ShoppingCart className="mr-2 h-5 w-5" />
+                    Commander maintenant
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl">Passer votre commande</DialogTitle>
+                  </DialogHeader>
+                  <form onSubmit={handleOrderSubmit} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label htmlFor="name">Nom complet *</Label>
+                        <Input
+                          id="name"
+                          required
+                          value={orderForm.name}
+                          onChange={(e) => setOrderForm({ ...orderForm, name: e.target.value })}
+                          placeholder="Votre nom"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="phone">Téléphone *</Label>
+                        <Input
+                          id="phone"
+                          type="tel"
+                          required
+                          value={orderForm.phone}
+                          onChange={(e) => setOrderForm({ ...orderForm, phone: e.target.value })}
+                          placeholder="+227 XX XX XX XX"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="address">Adresse de livraison *</Label>
+                      <Textarea
+                        id="address"
+                        required
+                        value={orderForm.address}
+                        onChange={(e) => setOrderForm({ ...orderForm, address: e.target.value })}
+                        placeholder="Quartier, rue..."
+                        rows={2}
+                      />
+                    </div>
+
+                    <div className="bg-accent/10 p-4 rounded-lg space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Produit:</span>
+                        <span className="font-medium">{product.name}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Quantité:</span>
+                        <span className="font-medium">{quantity}</span>
+                      </div>
+                      <div className="flex justify-between text-lg font-bold pt-2 border-t border-accent/20">
+                        <span>Total:</span>
+                        <span className="text-accent">{(product.price * quantity).toLocaleString()} FCFA</span>
+                      </div>
+                    </div>
+
+                    <Button type="submit" className="w-full bg-accent hover:bg-accent/90 py-6">
+                      <Package className="mr-2 h-5 w-5" />
+                      Confirmer la commande
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  onClick={() => {
+                    for (let i = 0; i < quantity; i++) {
+                      addToCart(product);
+                    }
+                    toast.success(`${quantity} produit(s) ajouté(s) au panier`);
+                  }}
+                  variant="outline"
+                  className="border-accent text-accent hover:bg-accent/10"
+                >
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Panier
+                </Button>
+                <Button
+                  onClick={handleCopyLink}
+                  variant="outline"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="mr-2 h-4 w-4" />
+                      Copié !
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="mr-2 h-4 w-4" />
+                      Partager
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <section className="mt-16">
+            <h2 className="text-3xl font-bold mb-8">Produits similaires</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {relatedProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    
+  );
+};
+
+export default ProductDetail;

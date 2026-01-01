@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Rose poudré as background */
+    --background: 20 100% 98%;
+    --foreground: 0 0% 20%;
+
+    /* Card with soft beige */
+    --card: 0 29% 95%;
+    --card-foreground: 0 0% 20%;
+
+    --popover: 0 29% 95%;
+    --popover-foreground: 0 0% 20%;
+
+    /* Rose poudré as primary */
+    --primary: 359 66% 87%;
+    --primary-foreground: 0 0% 20%;
+
+    /* Beige clair as secondary */
+    --secondary: 0 29% 95%;
+    --secondary-foreground: 0 0% 20%;
+
+    --muted: 0 29% 95%;
+    --muted-foreground: 0 0% 45%;
+
+    /* Or doux (gold) as accent */
+    --accent: 45 65% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 29% 90%;
+    --input: 0 29% 95%;
+    --ring: 359 66% 87%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 0 0% 20%;
+    --foreground: 20 100% 98%;
+
+    --card: 0 0% 15%;
+    --card-foreground: 20 100% 98%;
+
+    --popover: 0 0% 15%;
+    --popover-foreground: 20 100% 98%;
+
+    --primary: 359 66% 87%;
+    --primary-foreground: 0 0% 20%;
+
+    --secondary: 0 0% 25%;
+    --secondary-foreground: 20 100% 98%;
+
+    --muted: 0 0% 25%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 45 65% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 30%;
+    --input: 0 0% 25%;
+    --ring: 359 66% 87%;
+    --sidebar-background: 0 0% 15%;
+    --sidebar-foreground: 20 100% 98%;
+    --sidebar-primary: 359 66% 87%;
+    --sidebar-primary-foreground: 0 0% 20%;
+    --sidebar-accent: 0 0% 25%;
+    --sidebar-accent-foreground: 20 100% 98%;
+    --sidebar-border: 0 0% 30%;
+    --sidebar-ring: 359 66% 87%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-poppins;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift {
+    @apply transition-smooth hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .glass-effect {
+    @apply bg-white/80 backdrop-blur-sm;
+  }
+}
