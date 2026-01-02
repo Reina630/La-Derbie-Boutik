@@ -17,7 +17,7 @@ const slides = [
     title: 'Pousse & force des cheveux',
     subtitle: '',
     description: '',
-    image: '/La-Derbie-Boutik/batana_carousel.png',
+    image: '/La-Derbie-Boutik/caroussel3.png',
     ctaLabel: 'Voir la gamme Batana',
     ctaHref: '/boutique?category=beaute',
   },

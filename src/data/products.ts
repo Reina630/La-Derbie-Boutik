@@ -168,7 +168,7 @@ export const testimonials = [
   {
     id: 1,
     name: 'Aïcha M. - Niamey',
-    text: 'Les crèmes chinoises sont vraiment efficaces ! Mon teint est plus uniforme après 3 semaines. Livraison rapide à Niamey.',
+    text: 'Les crèmes  sont vraiment efficaces ! Mon teint est plus uniforme après 3 semaines. Livraison rapide à Niamey.',
     rating: 5,
   },
   {
@@ -186,7 +186,7 @@ export const testimonials = [
   {
     id: 4,
     name: 'Mariama I. - Tahoua',
-    text: 'Les produits éclaircissants fonctionnent vraiment. Qualité chinoise au top, livraison jusqu\'à Tahoua sans problème.',
+    text: 'Les produits éclaircissants fonctionnent vraiment. Qualité  au top, livraison jusqu\'à Tahoua sans problème.',
     rating: 5,
   },
 ];
