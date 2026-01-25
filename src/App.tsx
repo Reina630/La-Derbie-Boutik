@@ -38,7 +38,7 @@ const App = () => (
         <AdminAuthProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter basename="/La-Derbie-Boutik">
+          <BrowserRouter>
             <div className="min-h-screen flex flex-col">
               <Navbar />
               <main className="flex-1">
