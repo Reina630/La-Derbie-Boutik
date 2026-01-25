@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import caroussel3 from '@/assets/caroussel3.png';
+import carousel2 from '@/assets/carousel2.png';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,7 +19,7 @@ const slides = [
     title: 'Pousse & force des cheveux',
     subtitle: '',
     description: '',
-    image: '/La-Derbie-Boutik/caroussel3.png',
+    image: caroussel3,
     ctaLabel: 'Voir la gamme Batana',
     ctaHref: '/boutique?category=beaute',
   },
@@ -28,7 +30,7 @@ const slides = [
     title: 'Découvrez nos looks tendance',
     subtitle: '',
     description: '',
-    image: '/La-Derbie-Boutik/carousel2.png',
+    image: carousel2,
     ctaLabel: 'Produits tendance',
     ctaHref: '',
   },
