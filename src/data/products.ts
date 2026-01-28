@@ -168,25 +168,25 @@ export const testimonials = [
   {
     id: 1,
     name: 'Aïcha M. - Niamey',
-    text: 'Les crèmes  sont vraiment efficaces ! Mon teint est plus uniforme après 3 semaines. Livraison rapide à Niamey.',
+    text: "J'avais les cheveux crépus très secs et cassants. Depuis que j'utilise l'huile Batana, ils sont doux, hydratés et faciles à coiffer. Je revis !",
     rating: 5,
   },
   {
     id: 2,
     name: 'Fatouma B. - Maradi',
-    text: 'Excellente boutique ! Les produits sont authentiques et les prix abordables. Je commande régulièrement depuis Maradi.',
+    text: "Ma calvitie est terminée ! Après 3 mois avec la gamme Batana, mes cheveux repoussent sur les tempes et je retrouve confiance en moi.",
     rating: 5,
   },
   {
     id: 3,
     name: 'Hadiza S. - Zinder',
-    text: 'Ma perruque est magnifique et naturelle. Le service WhatsApp est très réactif. Je recommande à toutes les sœurs du Niger !',
+    text: "J'avais perdu espoir à cause de la casse. Grâce au masque Batana, mes cheveux sont plus forts et ne tombent plus. Merci !",
     rating: 5,
   },
   {
     id: 4,
     name: 'Mariama I. - Tahoua',
-    text: 'Les produits éclaircissants fonctionnent vraiment. Qualité  au top, livraison jusqu\'à Tahoua sans problème.',
+    text: "Mes cheveux étaient ternes et sans vie. Avec l'huile Batana, ils brillent et poussent plus vite. Résultat visible dès le premier mois !",
     rating: 5,
   },
 ];

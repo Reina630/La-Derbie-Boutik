@@ -43,16 +43,7 @@ const Contact = () => {
                   <Phone className="h-5 w-5 text-accent mt-1" />
                   <div>
                     <p className="font-semibold">Téléphone</p>
-                    <p className="text-muted-foreground">+227 90 00 00 00</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Mail className="h-5 w-5 text-accent mt-1" />
-                  <div>
-                    <p className="font-semibold">Email</p>
-                    <p className="text-muted-foreground">
-                      contact@nigershopbeaute.com
-                    </p>
+                    <p className="text-muted-foreground">93 95 65 83</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -76,7 +67,7 @@ const Contact = () => {
                   Pour une réponse rapide, contactez-nous directement sur WhatsApp !
                 </p>
                 <a
-                  href="https://wa.me/22790000000"
+                  href="https://wa.me/22793956583"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
