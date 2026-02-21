@@ -27,6 +27,7 @@ import AdminSales from "./pages/AdminSales";
 import AdminUsers from "./pages/AdminUsers";
 import AdminProductAssignment from "./pages/AdminProductAssignment";
 import AdminCategories from "./pages/AdminCategories";
+import Prospection from "./pages/Prospection";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -62,6 +63,9 @@ const App = () => (
                   <Route path="/admin/utilisateurs" element={<ProtectedAdminRoute requireSuperAdmin><AdminLayout><AdminUsers /></AdminLayout></ProtectedAdminRoute>} />
                   <Route path="/admin/attribution-produits" element={<ProtectedAdminRoute requireSuperAdmin><AdminLayout><AdminProductAssignment /></AdminLayout></ProtectedAdminRoute>} />
                   <Route path="/admin/categories" element={<ProtectedAdminRoute><AdminLayout><AdminCategories /></AdminLayout></ProtectedAdminRoute>} />
+                  
+                  {/* Prospection Route */}
+                  <Route path="/prospection" element={<Prospection />} />
                   
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />

@@ -1,25 +1,41 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '@/components/ProductCard';
+import QuickOrderDialog from '@/components/QuickOrderDialog';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 
 const Shop = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
+  const orderParam = searchParams.get('order');
   
   const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam || 'all');
   const [searchQuery, setSearchQuery] = useState('');
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
   // Charger les données depuis Supabase
   useEffect(() => {
     loadData();
   }, []);
+
+  // Détecter le paramètre order pour la publicité Instagram
+  useEffect(() => {
+    if (orderParam && !loading) {
+      setSelectedProductId(orderParam);
+      setOrderDialogOpen(true);
+      // Supprimer le paramètre de l'URL après ouverture
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.delete('order');
+      setSearchParams(newSearchParams, { replace: true });
+    }
+  }, [orderParam, loading]);
 
   const loadData = async () => {
     try {
@@ -147,6 +163,15 @@ const Shop = () => {
           </div>
         )}
       </div>
+
+      {/* Dialog de commande rapide pour publicité Instagram */}
+      {selectedProductId && (
+        <QuickOrderDialog
+          productId={selectedProductId}
+          open={orderDialogOpen}
+          onOpenChange={setOrderDialogOpen}
+        />
+      )}
     </div>
   );
 };
